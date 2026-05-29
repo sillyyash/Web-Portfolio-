@@ -5,18 +5,38 @@
     box-sizing: border-box;
 }
 
+body.light-mode, body.dark-mode {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Theme-Specific Styles */
 body.light-mode {
     background-color: #f9f9f9;
     color: #333;
     font-family: 'Roboto', sans-serif;
+    /* Custom Cursor Color for Light Mode */
+    #cursor-border {
+        box-shadow: 0 0 0 1px black; /* Dark border in light mode */
+        background-color: white; <!-- Default cursor color -->
+    }
 }
 
 body.dark-mode {
     background-color: #121212;
     color: #ddd;
     font-family: 'Roboto', sans-serif;
+    /* Custom Cursor Color for Dark Mode */
+    #cursor-border {
+        box-shadow: 0 0 0 1px white; /* Light border in dark mode */
+        background-color: black; <!-- Default cursor color -->
+    }
 }
 
+/* Header Styles (existing) */
 header {
     background-color: #0a0a0a;
     padding: 20px 30px;
@@ -41,7 +61,7 @@ nav a, nav button {
     transition: background-color 0.3s ease;
 }
 
-nav a:hover {
+nav a:hover, #theme-toggle:hover {
     background-color: #2a2a2a;
     border-radius: 5px;
 }
@@ -53,6 +73,7 @@ nav a:hover {
     font-size: 16px;
 }
 
+/* Section Styles (existing) */
 .animated-section {
     padding: 100px 40px;
     opacity: 0;
@@ -106,12 +127,4 @@ nav a:hover {
     outline: none;
 }
 
-.cursor-follower {
-    position: fixed;
-    width: 30px;
-    height: 30px;
-    background-color: #e74c3c;
-    border-radius: 50%;
-    pointer-events: none;
-    z-index: 1001;
-}
+/* Custom Cursor Styles (already included in index.html) */
