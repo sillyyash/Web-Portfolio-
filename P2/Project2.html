@@ -171,14 +171,28 @@ function init() {
 
   loader.load(
     modelPath,
-
     (gltf) => {
-      model = gltf.scene;
+      model = gltf.scene;giot
       scene.add(model);
 
-      document.getElementById("loading").innerText = "MODEL LOADED ✅";
-      console.log("✅ MODEL LOADED SUCCESSFULLY");
-    },
+      // ✅ AUTO-FIT CAMERA TO MODEL
+      const box = new THREE.Box3().setFromObject(model);
+      const center = box.getCenter(new THREE.Vector3());
+      const size = box.getSize(new THREE.Vector3());
+
+      const maxDim = Math.max(size.x, size.y, size.z);
+      camera.position.set(center.x, center.y, center.z + maxDim * 2);
+      camera.lookAt(center);
+
+      controls.target.copy(center);
+      controls.update();
+
+      // Log so you can see what's happening
+      console.log("Model size:", size);
+      console.log("Model center:", center);
+
+      document.getElementById("loading").style.display = "none";
+   },
 
     (xhr) => {
       if (xhr.total > 0) {
