@@ -121,11 +121,13 @@ h2 {
 
 <!-- THREE.JS (MODULE STYLE - FIXED) -->
 <script type="module">
-import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js";
-import { OrbitControls } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/controls/OrbitControls.js";
-import { GLTFLoader } from "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
+import * as THREE from "https://esm.sh/three@0.160.0";
+import { OrbitControls } from "https://esm.sh/three@0.160.0/examples/jsm/controls/OrbitControls.js";
+import { GLTFLoader } from "https://esm.sh/three@0.160.0/examples/jsm/loaders/GLTFLoader.js";
 
 let scene, camera, renderer, model, controls;
+
+console.log("🚀 SCRIPT STARTED");
 
 init();
 
@@ -149,45 +151,50 @@ function init() {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   container.appendChild(renderer.domElement);
 
-  // LIGHTING (important fix)
-  const ambient = new THREE.AmbientLight(0xffffff, 0.8);
-  scene.add(ambient);
+  // LIGHTS
+  scene.add(new THREE.AmbientLight(0xffffff, 0.8));
 
-  const directional = new THREE.DirectionalLight(0xffffff, 1.2);
-  directional.position.set(5, 10, 5);
-  scene.add(directional);
+  const dir = new THREE.DirectionalLight(0xffffff, 1.2);
+  dir.position.set(5, 10, 5);
+  scene.add(dir);
 
-  // controls
+  // CONTROLS
   controls = new OrbitControls(camera, renderer.domElement);
   controls.enableDamping = true;
-  controls.dampingFactor = 0.05;
 
   // LOAD MODEL
   const loader = new GLTFLoader();
 
-  console.log("SCRIPT RUNNING");
-  
-  loader.load(
-    "model.glb",
+  const modelPath = "./model.glb";
 
-    function (gltf) {
+  console.log("📦 Trying to load:", modelPath);
+
+  loader.load(
+    modelPath,
+
+    (gltf) => {
       model = gltf.scene;
       scene.add(model);
 
       document.getElementById("loading").innerText = "MODEL LOADED ✅";
-      console.log("SUCCESS: model loaded");
+      console.log("✅ MODEL LOADED SUCCESSFULLY");
     },
 
-    function (progress) {
-      const percent = (progress.loaded / progress.total * 100).toFixed(1);
-      document.getElementById("loading").innerText =
-        "Loading... " + percent + "%";
+    (xhr) => {
+      if (xhr.total > 0) {
+        const percent = (xhr.loaded / xhr.total * 100).toFixed(1);
+        document.getElementById("loading").innerText =
+          `Loading ${percent}%`;
+      } else {
+        document.getElementById("loading").innerText =
+          `Loading...`;
+      }
     },
 
-    function (error) {
-      console.error("❌ MODEL FAILED:", error);
+    (error) => {
+      console.error("❌ GLB FAILED:", error);
       document.getElementById("loading").innerText =
-        "FAILED TO LOAD MODEL ❌ (check console)";
+        "❌ FAILED (check console & network tab)";
     }
   );
 
@@ -200,8 +207,9 @@ function animate() {
   renderer.render(scene, camera);
 }
 
-// responsive
+// RESIZE FIXED
 window.addEventListener("resize", () => {
+
   const container = document.getElementById("viewer");
 
   camera.aspect = container.clientWidth / container.clientHeight;
