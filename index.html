@@ -5,6 +5,53 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
     <!-- Existing Stylesheets -->
+    <!-- Existing Stylesheets -->
+    <!-- Custom Cursor Styles -->
+    <style>
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Hide default cursor */
+        }
+
+        body.light-mode, body.dark-mode {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* Custom Cursor Elements */
+        #cursor {
+            position: fixed;
+            top: -5px;
+            left: -5px;
+            width: 10px;
+            height: 10px;
+            background-color: white; /* Default cursor color */
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 999;
+        }
+
+        #cursor-border {
+            --size: 50px;
+            position: fixed;
+            top: calc(var(--size) / -2);
+            left: calc(var(--size) / -2);
+            width: var(--size);
+            height: var(--size);
+            border-radius: 50%;
+            box-shadow: 0 0 0 1px white; /* Default border color */
+            pointer-events: none;
+            transition: top 0.15s ease-out, left 0.15s ease-out, width 0.15s ease-out,
+                        height 0.15s ease-out, background-color 0.15s ease-out;
+            z-index: 998; /* Slightly lower z-index than #cursor for proper layering */
+        }
+    </style>
     <link rel="stylesheet" href="styles.css">
     <!-- Custom Cursor Styles -->
     <style>
@@ -16,10 +63,12 @@
             cursor: none; <!-- Hide default cursor -->
         }
 
+                <li><button id="theme-toggle" data-cursor="pointer">Toggle Theme</button></li>
         body.light-mode, body.dark-mode {
             display: flex;
             justify-content: center;
             align-items: center;
+    <!-- Sections (existing) -->
             height: 100vh;
             overflow: hidden;
         }
@@ -67,9 +116,12 @@
         </nav>
     </header>
 
-    <!-- Sections (existing) -->
-    <section id="home" class="animated-section">
-        <!-- ... existing content ... -->
+
+
+
+            <li><button class="pop-button" data-cursor="pointer">Project 1</button></li>
+            <li><button class="pop-button" data-cursor="pointer">Project 2</button></li>
+            <li><button class="pop-button" data-cursor="pointer">Project 3</button></li>
     </section>
 
     <section id="about" class="animated-section">
@@ -79,8 +131,12 @@
 
     <section id="projects" class="animated-section">
         <h2>Projects</h2>
-        <ul>
+
+    <!-- Custom Cursor Elements -->
+    <div id="cursor"></div>
+    <div id="cursor-border"></div>
             <li><button class="pop-button" data-cursor="pointer">Project 1</button></li>
+    <!-- Existing Scripts -->
             <li><button class="pop-button" data-cursor="pointer">Project 2</button></li>
             <li><button class="pop-button" data-cursor="pointer">Project 3</button></li>
         </ul>
