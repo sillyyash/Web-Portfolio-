@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const isDark = document.body.classList.contains('dark-mode');
         document.body.classList.toggle('dark-mode', !isDark);
         document.body.classList.toggle('light-mode', isDark);
-        themeToggle.textContent = isDark ? '☀️ Light Mode' : '🌙 Dark Mode';
     });
 
     // ── Section Animations ────────────────────────
