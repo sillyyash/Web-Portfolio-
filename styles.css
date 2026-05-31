@@ -1,42 +1,81 @@
-/* Basic Reset */
+/* ── Reset ─────────────────────────────────────── */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    cursor: none;
 }
 
-body.light-mode, body.dark-mode {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    overflow: hidden;
-}
-
-/* Theme-Specific Styles */
-body.light-mode {
-    background-color: #f9f9f9;
-    color: #333;
-    font-family: 'Roboto', sans-serif;
-    /* Custom Cursor Color for Light Mode */
-    #cursor-border {
-        box-shadow: 0 0 0 1px black; /* Dark border in light mode */
-        background-color: white; <!-- Default cursor color -->
-    }
-}
-
+/* ── Themes ─────────────────────────────────────── */
 body.dark-mode {
     background-color: #121212;
     color: #ddd;
     font-family: 'Roboto', sans-serif;
-    /* Custom Cursor Color for Dark Mode */
-    #cursor-border {
-        box-shadow: 0 0 0 1px white; /* Light border in dark mode */
-        background-color: black; <!-- Default cursor color -->
-    }
 }
 
-/* Header Styles (existing) */
+body.light-mode {
+    background-color: #f9f9f9;
+    color: #333;
+    font-family: 'Roboto', sans-serif;
+}
+
+/* ── Custom Cursor ──────────────────────────────── */
+
+/* The tiny sharp dot — sits exactly on the pointer */
+#cursor-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999999;
+    /* JS will drive left/top via translate so we start off-screen */
+    top: 0;
+    left: 0;
+    will-change: transform;
+}
+
+/* The glowing ring that lags behind */
+#cursor-glow {
+    position: fixed;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 999998;
+    top: 0;
+    left: 0;
+    will-change: transform;
+    /* Glowing ring effect */
+    border: 2px solid rgba(255, 255, 255, 0.85);
+    box-shadow:
+        0 0 8px rgba(255, 255, 255, 0.6),
+        0 0 20px rgba(255, 255, 255, 0.3),
+        inset 0 0 8px rgba(255, 255, 255, 0.1);
+    transition: width 0.2s ease, height 0.2s ease,
+                border-color 0.2s ease, box-shadow 0.2s ease,
+                background-color 0.2s ease;
+}
+
+/* Hover state — ring expands and pulses with accent color */
+body.cursor-hover #cursor-glow {
+    width: 56px;
+    height: 56px;
+    border-color: rgba(231, 76, 60, 0.9);
+    background-color: rgba(231, 76, 60, 0.08);
+    box-shadow:
+        0 0 12px rgba(231, 76, 60, 0.7),
+        0 0 30px rgba(231, 76, 60, 0.4),
+        inset 0 0 12px rgba(231, 76, 60, 0.1);
+}
+
+body.cursor-hover #cursor-dot {
+    background: #e74c3c;
+    box-shadow: 0 0 6px #e74c3c;
+}
+
+/* ── Header / Nav ───────────────────────────────── */
 header {
     background-color: #0a0a0a;
     padding: 20px 30px;
@@ -61,7 +100,7 @@ nav a, nav button {
     transition: background-color 0.3s ease;
 }
 
-nav a:hover, #theme-toggle:hover {
+nav a:hover {
     background-color: #2a2a2a;
     border-radius: 5px;
 }
@@ -69,11 +108,11 @@ nav a:hover, #theme-toggle:hover {
 #theme-toggle {
     background-color: transparent;
     border: none;
-    cursor: pointer;
     font-size: 16px;
+    color: inherit;
 }
 
-/* Section Styles (existing) */
+/* ── Sections ───────────────────────────────────── */
 .animated-section {
     padding: 100px 40px;
     opacity: 0;
@@ -88,23 +127,36 @@ nav a:hover, #theme-toggle:hover {
 
 .animated-section p {
     line-height: 1.6;
-    margin-bottom: 40px;
+    margin-bottom: 20px;
 }
 
+/* ── Resume ─────────────────────────────────────── */
 .resume-tab {
     max-width: 800px;
     margin-left: 5%;
     text-align: left;
 }
 
+.resume-section {
+    margin-bottom: 30px;
+}
+
 .resume-section h2 {
     font-weight: bold;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .resume-section ul {
     list-style-type: disc;
     padding-left: 20px;
+}
+
+/* ── Project Buttons ────────────────────────────── */
+#projects ul {
+    list-style: none;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
 }
 
 .pop-button {
@@ -113,18 +165,15 @@ nav a:hover, #theme-toggle:hover {
     color: #fff;
     background-color: #e74c3c;
     border: none;
-    cursor: pointer;
     border-radius: 5px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .pop-button:hover {
     transform: scale(1.05);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 4px 20px rgba(231, 76, 60, 0.5);
 }
 
 .pop-button:focus {
     outline: none;
 }
-
-/* Custom Cursor Styles (already included in index.html) */

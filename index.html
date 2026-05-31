@@ -4,106 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio</title>
-    <!-- Existing Stylesheets -->
-    <!-- Existing Stylesheets -->
-    <!-- Custom Cursor Styles -->
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; /* Hide default cursor */
-        }
-
-        body.light-mode, body.dark-mode {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Custom Cursor Elements */
-        #cursor {
-            position: fixed;
-            top: -5px;
-            left: -5px;
-            width: 10px;
-            height: 10px;
-            background-color: white; /* Default cursor color */
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        #cursor-border {
-            --size: 50px;
-            position: fixed;
-            top: calc(var(--size) / -2);
-            left: calc(var(--size) / -2);
-            width: var(--size);
-            height: var(--size);
-            border-radius: 50%;
-            box-shadow: 0 0 0 1px white; /* Default border color */
-            pointer-events: none;
-            transition: top 0.15s ease-out, left 0.15s ease-out, width 0.15s ease-out,
-                        height 0.15s ease-out, background-color 0.15s ease-out;
-            z-index: 998; /* Slightly lower z-index than #cursor for proper layering */
-        }
-    </style>
     <link rel="stylesheet" href="styles.css">
-    <!-- Custom Cursor Styles -->
-    <style>
-        /* Basic Reset */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            cursor: none; <!-- Hide default cursor -->
-        }
-
-                <li><button id="theme-toggle" data-cursor="pointer">Toggle Theme</button></li>
-        body.light-mode, body.dark-mode {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-    <!-- Sections (existing) -->
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        /* Custom Cursor Elements */
-        #cursor {
-            position: fixed;
-            top: -5px;
-            left: -5px;
-            width: 10px;
-            height: 10px;
-            background-color: white; <!-- Default cursor color -->
-            border-radius: 50%;
-            pointer-events: none;
-            z-index: 999;
-        }
-
-        #cursor-border {
-            --size: 50px;
-            position: fixed;
-            top: calc(var(--size) / -2);
-            left: calc(var(--size) / -2);
-            width: var(--size);
-            height: var(--size);
-            border-radius: 50%;
-            box-shadow: 0 0 0 1px white; <!-- Default border color -->
-            pointer-events: none;
-            transition: top 0.15s ease-out, left 0.15s ease-out, width 0.15s ease-out,
-                        height 0.15s ease-out, background-color 0.15s ease-out;
-            z-index: 998; <!-- Slightly lower z-index than #cursor for proper layering -->
-        }
-    </style>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 </head>
-<body class="light-mode">
+<body class="dark-mode">
+
+    <!-- Custom cursor -->
+    <div id="cursor-dot"></div>
+    <div id="cursor-glow"></div>
+
     <header>
         <nav>
             <ul>
@@ -111,17 +20,48 @@
                 <li><a href="#about">About</a></li>
                 <li><a href="#projects">Projects</a></li>
                 <li><a href="#contact">Contact</a></li>
-                <li><button id="theme-toggle" data-cursor="pointer">Toggle Theme</button></li>
+                <li><button id="theme-toggle">Toggle Theme</button></li>
             </ul>
         </nav>
     </header>
 
-
-
-
-            <li><button class="pop-button" data-cursor="pointer">Project 1</button></li>
-            <li><button class="pop-button" data-cursor="pointer">Project 2</button></li>
-            <li><button class="pop-button" data-cursor="pointer">Project 3</button></li>
+    <section id="home" class="animated-section">
+        <div class="resume-tab">
+            <h1>Resume</h1>
+            <div class="resume-section">
+                <h2>Personal Information</h2>
+                <p><strong>Name:</strong> Yash Rana</p>
+                <p><strong>Age:</strong> 18</p>
+                <p><strong>Email:</strong> yashranaforyou@gmail.com</p>
+                <p><strong>Phone:</strong>+918307766408</p>
+            </div>
+            <div class="resume-section">
+                <h2>Experience</h2>
+                <p><strong>Company Name:</strong>YP Inc.</p>
+                <p><strong>Position:</strong> Software Engineer</p>
+                <p><strong>Duration:</strong> - Present</p>
+            </div>
+            <div class="resume-section">
+                <h2>Education</h2>
+                <p><strong>Institution:</strong> JUIT </p>
+                <p><strong>Degree:</strong>Computer Engineering</p>
+                <p><strong>Year of Graduation:</strong> NONE </p>
+            </div>
+            <div class="resume-section">
+                <h2>Skills</h2>
+                <ul>
+                    <li>JavaScript</li>
+                    <li>Python</li>
+                    <li>React</li>
+                    <li>Node.js</li>
+                    <li>Docker</li>
+                </ul>
+            </div>
+            <div class="resume-section">
+                <h2>Expected Income</h2>
+                <p>INR 80,000 - INR 100,000 per month</p>
+            </div>
+        </div>
     </section>
 
     <section id="about" class="animated-section">
@@ -131,28 +71,19 @@
 
     <section id="projects" class="animated-section">
         <h2>Projects</h2>
-
-    <!-- Custom Cursor Elements -->
-    <div id="cursor"></div>
-    <div id="cursor-border"></div>
-            <li><button class="pop-button" data-cursor="pointer">Project 1</button></li>
-    <!-- Existing Scripts -->
-            <li><button class="pop-button" data-cursor="pointer">Project 2</button></li>
-            <li><button class="pop-button" data-cursor="pointer">Project 3</button></li>
+        <ul>
+            <li><button class="pop-button" onclick="window.location.href='Project1.html'">Project 1</button></li>
+            <li><button class="pop-button" onclick="window.location.href='Project2.html'">Project 2</button></li>
+            <li><button class="pop-button" onclick="window.location.href='Project3.html'">Project 3</button></li>
         </ul>
     </section>
 
     <section id="contact" class="animated-section">
         <h2>Contact Me</h2>
-        <p>Email: example@example.com</p>
-        <p>Phone: +1234567890</p>
+        <p>Email: yashranaforyou@gmail.com</p>
+        <p>Phone: +918307766408</p>
     </section>
 
-    <!-- Custom Cursor Elements -->
-    <div id="cursor"></div>
-    <div id="cursor-border"></div>
-
-    <!-- Existing Scripts -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
     <script src="script.js"></script>
 </body>
