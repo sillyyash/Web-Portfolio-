@@ -172,16 +172,20 @@ function init() {
       model = gltf.scene;
       scene.add(model);
 
-      document.getElementById("loading").style.display = "none";
+      document.getElementById("loading").innerText = "MODEL LOADED ✅";
+      console.log("SUCCESS: model loaded");
     },
 
     function (progress) {
-      console.log((progress.loaded / progress.total * 100) + "% loaded");
+      const percent = (progress.loaded / progress.total * 100).toFixed(1);
+      document.getElementById("loading").innerText =
+        "Loading... " + percent + "%";
     },
 
     function (error) {
-      console.error("Model failed to load:", error);
-      document.getElementById("loading").innerText = "Failed to load model";
+      console.error("❌ MODEL FAILED:", error);
+      document.getElementById("loading").innerText =
+        "FAILED TO LOAD MODEL ❌ (check console)";
     }
   );
 
