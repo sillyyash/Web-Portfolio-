@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VELO — Fashion Store</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --black: #0D0D0D;
+      --coral: #FF4D4D;
+      --coral-dark: #e03e3e;
+      --white: #FFFFFF;
+      --stone: #F5F0EB;
+      --slate: #888888;
+      --border: #E5E5E5;
+      --card-bg: #FAFAFA;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--white);
+      color: var(--black);
+      overflow-x: hidden;
+    }
+
+    /* ── TOAST ── */
+    #toast {
+      position: fixed;
+      bottom: 28px;
+      right: 28px;
+      background: var(--black);
+      color: var(--white);
+      padding: 14px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 500;
+      z-index: 9999;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    #toast.show { opacity: 1; transform: translateY(0); }
+
+    /* ── ANNOUNCEMENT BAR ── */
+    .announcement {
+      background: var(--coral);
+      color: var(--white);
+      text-align: center;
+      padding: 9px 16px;
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.04em;
+    }
+    .announcement span { margin: 0 10px; opacity: 0.7; }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 48px;
+      height: 68px;
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 32px;
+      letter-spacing: 0.06em;
+      color: var(--black);
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--coral); }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      text-decoration: none;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--black);
+      letter-spacing: 0.02em;
+      transition: color 0.2s;
+      position: relative;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: var(--coral);
+      transition: width 0.2s;
+    }
+    .nav-links a:hover { color: var(--coral); }
+    .nav-links a:hover::after { width: 100%; }
+    .nav-links a.sale { color: var(--coral); }
+
+    .nav-icons {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .nav-icon-btn {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      transition: background 0.2s;
+      position: relative;
+    }
+    .nav-icon-btn:hover { background: var(--stone); }
+    .nav-icon-btn svg { width: 20px; height: 20px; }
+
+    .cart-badge {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: var(--coral);
+      color: var(--white);
+      font-size: 10px;
+      font-weight: 700;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+    }
+
+    /* Search bar */
+    .search-bar {
+      display: flex;
+      align-items: center;
+      background: var(--stone);
+      border-radius: 24px;
+      padding: 8px 16px;
+      gap: 8px;
+      width: 220px;
+    }
+    .search-bar svg { width: 16px; height: 16px; color: var(--slate); flex-shrink: 0; }
+    .search-bar input {
+      border: none;
+      background: transparent;
+      font-size: 14px;
+      color: var(--black);
+      width: 100%;
+      outline: none;
+      font-family: 'Inter', sans-serif;
+    }
+    .search-bar input::placeholder { color: var(--slate); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--black);
+      min-height: 88vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      overflow: hidden;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 80px 64px;
+      position: relative;
+    }
+
+    .hero-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      margin-bottom: 20px;
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(72px, 9vw, 130px);
+      line-height: 0.92;
+      color: var(--white);
+      letter-spacing: 0.02em;
+    }
+    .hero-title .accent { color: var(--coral); }
+
+    .hero-sub {
+      margin-top: 28px;
+      font-size: 16px;
+      color: #aaa;
+      line-height: 1.7;
+      max-width: 380px;
+      font-weight: 300;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 14px;
+      margin-top: 40px;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--coral);
+      color: var(--white);
+      border: none;
+      padding: 15px 36px;
+      font-size: 14px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: background 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--coral-dark); transform: translateY(-2px); }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid rgba(255,255,255,0.3);
+      padding: 15px 36px;
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 4px;
+      transition: border-color 0.2s, transform 0.15s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-outline:hover { border-color: var(--white); transform: translateY(-2px); }
+
+    .hero-stats {
+      display: flex;
+      gap: 40px;
+      margin-top: 52px;
+    }
+    .hero-stat-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 36px;
+      color: var(--white);
+      letter-spacing: 0.04em;
+    }
+    .hero-stat-label {
+      font-size: 12px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 2px;
+    }
+
+    .hero-right {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(0.88);
+    }
+
+    .hero-tag {
+      position: absolute;
+      bottom: 40px;
+      left: 40px;
+      background: var(--white);
+      padding: 16px 22px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    }
+    .hero-tag-icon {
+      width: 40px;
+      height: 40px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .hero-tag-icon svg { width: 20px; height: 20px; color: #fff; }
+    .hero-tag-text { font-size: 12px; color: var(--slate); }
+    .hero-tag-text strong { display: block; font-size: 14px; color: var(--black); font-weight: 600; }
+
+    /* ── TICKER STRIP ── */
+    .ticker {
+      background: var(--coral);
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+    .ticker-inner {
+      display: inline-flex;
+      animation: ticker 22s linear infinite;
+    }
+    .ticker-item {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 20px;
+      letter-spacing: 0.1em;
+      color: var(--white);
+      padding: 0 32px;
+    }
+    .ticker-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: rgba(255,255,255,0.5);
+      border-radius: 50%;
+      margin: 0 8px;
+      vertical-align: middle;
+    }
+    @keyframes ticker {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    /* ── SECTION WRAPPER ── */
+    .section { padding: 80px 48px; }
+    .section-sm { padding: 48px 48px; }
+
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      margin-bottom: 40px;
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 48px;
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .section-title span { color: var(--coral); }
+    .section-sub {
+      font-size: 14px;
+      color: var(--slate);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+    .see-all {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--coral);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: gap 0.2s;
+    }
+    .see-all:hover { gap: 10px; }
+    .see-all svg { width: 16px; height: 16px; }
+
+    /* ── CATEGORY GRID ── */
+    .cat-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr;
+      grid-template-rows: 240px 240px;
+      gap: 16px;
+    }
+    .cat-card {
+      position: relative;
+      overflow: hidden;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+    .cat-card:first-child { grid-row: 1 / 3; }
+
+    .cat-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+      display: block;
+    }
+    .cat-card:hover img { transform: scale(1.06); }
+
+    .cat-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.65) 0%, transparent 55%);
+    }
+    .cat-label {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+    }
+    .cat-label h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 28px;
+      color: var(--white);
+      letter-spacing: 0.06em;
+    }
+    .cat-label p {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+      margin-top: 2px;
+    }
+    .cat-badge {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      background: var(--coral);
+      color: var(--white);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: 5px 10px;
+      border-radius: 4px;
+    }
+
+    /* ── PRODUCT GRID ── */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 24px;
+    }
+
+    .product-card {
+      background: var(--card-bg);
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: box-shadow 0.25s, transform 0.25s;
+      position: relative;
+    }
+    .product-card:hover {
+      box-shadow: 0 12px 40px rgba(0,0,0,0.1);
+      transform: translateY(-4px);
+    }
+
+    .product-img-wrap {
+      position: relative;
+      overflow: hidden;
+      aspect-ratio: 3/4;
+      background: #eee;
+    }
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+    .product-card:hover .product-img-wrap img { transform: scale(1.06); }
+
+    .product-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 4px;
+    }
+    .badge-new { background: var(--black); color: var(--white); }
+    .badge-sale { background: var(--coral); color: var(--white); }
+    .badge-hot { background: #FF8C00; color: var(--white); }
+
+    .wishlist-btn {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 34px;
+      height: 34px;
+      background: var(--white);
+      border: none;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.2s;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .wishlist-btn svg { width: 16px; height: 16px; }
+    .product-card:hover .wishlist-btn { opacity: 1; }
+    .wishlist-btn.liked svg { fill: var(--coral); stroke: var(--coral); }
+
+    .quick-add {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      padding: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      cursor: pointer;
+      opacity: 0;
+      transform: translateY(100%);
+      transition: all 0.25s ease;
+    }
+    .product-card:hover .quick-add { opacity: 1; transform: translateY(0); }
+    .quick-add:hover { background: var(--coral); }
+
+    .product-info { padding: 16px; }
+    .product-brand {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--slate);
+      margin-bottom: 4px;
+    }
+    .product-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--black);
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .product-price-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .price-current {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--black);
+    }
+    .price-original {
+      font-size: 13px;
+      color: var(--slate);
+      text-decoration: line-through;
+    }
+    .price-off {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--coral);
+      margin-left: auto;
+    }
+
+    .product-colors {
+      display: flex;
+      gap: 5px;
+      margin-top: 10px;
+    }
+    .color-dot {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: 1.5px solid #ddd;
+      cursor: pointer;
+      transition: border-color 0.15s;
+    }
+    .color-dot:hover { border-color: var(--black); }
+
+    .product-rating {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .stars { color: #FFC107; font-size: 12px; letter-spacing: 1px; }
+    .rating-count { font-size: 11px; color: var(--slate); }
+
+    /* ── DEAL BANNER ── */
+    .deal-banner {
+      background: var(--black);
+      padding: 80px 64px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+    .deal-eyebrow {
+      font-size: 12px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--coral);
+      font-weight: 600;
+      margin-bottom: 16px;
+    }
+    .deal-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 64px;
+      color: var(--white);
+      line-height: 0.95;
+      letter-spacing: 0.03em;
+    }
+    .deal-title .accent { color: var(--coral); }
+    .deal-desc {
+      font-size: 15px;
+      color: #aaa;
+      margin-top: 20px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .countdown {
+      display: flex;
+      gap: 16px;
+      margin-top: 36px;
+    }
+    .countdown-unit {
+      text-align: center;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 20px;
+      border-radius: 8px;
+      min-width: 72px;
+    }
+    .countdown-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 38px;
+      color: var(--coral);
+      line-height: 1;
+    }
+    .countdown-label {
+      font-size: 11px;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    .deal-cta { margin-top: 36px; display: flex; gap: 12px; }
+
+    .deal-img-wrap {
+      position: relative;
+    }
+    .deal-img-wrap img {
+      width: 100%;
+      border-radius: 10px;
+      object-fit: cover;
+      max-height: 460px;
+    }
+    .deal-floating-badge {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 90px;
+      height: 90px;
+      background: var(--coral);
+      border-radius: 50%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-family: 'Bebas Neue', sans-serif;
+      color: var(--white);
+      box-shadow: 0 8px 24px rgba(255,77,77,0.5);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+    .deal-floating-badge .big { font-size: 28px; line-height: 1; }
+    .deal-floating-badge .small { font-size: 13px; letter-spacing: 0.04em; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.06); }
+    }
+
+    /* ── FEATURES STRIP ── */
+    .features-strip {
+      background: var(--stone);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .feature-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 32px 36px;
+      border-right: 1px solid var(--border);
+    }
+    .feature-item:last-child { border-right: none; }
+    .feature-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--coral);
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .feature-icon svg { width: 22px; height: 22px; color: var(--white); }
+    .feature-title { font-size: 14px; font-weight: 700; margin-bottom: 3px; }
+    .feature-desc { font-size: 12px; color: var(--slate); }
+
+    /* ── NEWSLETTER ── */
+    .newsletter {
+      background: var(--coral);
+      padding: 80px 48px;
+      text-align: center;
+    }
+    .newsletter-eyebrow {
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.75);
+      margin-bottom: 12px;
+    }
+    .newsletter h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 60px;
+      color: var(--white);
+      letter-spacing: 0.04em;
+      line-height: 1;
+    }
+    .newsletter p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 14px;
+      font-weight: 300;
+    }
+    .newsletter-form {
+      display: flex;
+      justify-content: center;
+      gap: 0;
+      margin-top: 36px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .newsletter-form input {
+      flex: 1;
+      padding: 15px 22px;
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 14px;
+      background: rgba(255,255,255,0.2);
+      color: var(--white);
+      border-radius: 4px 0 0 4px;
+      outline: none;
+    }
+    .newsletter-form input::placeholder { color: rgba(255,255,255,0.65); }
+    .newsletter-form button {
+      padding: 15px 30px;
+      background: var(--black);
+      color: var(--white);
+      border: none;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-radius: 0 4px 4px 0;
+      transition: background 0.2s;
+    }
+    .newsletter-form button:hover { background: #222; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      color: rgba(255,255,255,0.85);
+      padding: 64px 48px 32px;
+    }
+    .footer-top {
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr;
+      gap: 48px;
+      padding-bottom: 48px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .footer-brand .nav-logo { display: inline-block; margin-bottom: 16px; }
+    .footer-brand p {
+      font-size: 13px;
+      line-height: 1.8;
+      color: #666;
+      max-width: 280px;
+    }
+    .footer-social {
+      display: flex;
+      gap: 10px;
+      margin-top: 24px;
+    }
+    .social-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s;
+      border: 1px solid rgba(255,255,255,0.1);
+      text-decoration: none;
+    }
+    .social-btn:hover { background: var(--coral); border-color: var(--coral); }
+    .social-btn svg { width: 16px; height: 16px; color: #fff; }
+
+    .footer-col h4 {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      color: var(--white);
+    }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a {
+      font-size: 13px;
+      color: #666;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .footer-col ul li a:hover { color: var(--coral); }
+
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-top: 28px;
+      font-size: 12px;
+      color: #444;
+    }
+    .payment-icons {
+      display: flex;
+      gap: 8px;
+    }
+    .pay-icon {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 4px;
+      padding: 4px 10px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #777;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-right { height: 400px; }
+      .cat-grid { grid-template-columns: 1fr 1fr; grid-template-rows: auto; }
+      .cat-card:first-child { grid-row: auto; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .deal-banner { grid-template-columns: 1fr; }
+      .features-strip { grid-template-columns: 1fr 1fr; }
+      .footer-top { grid-template-columns: 1fr 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .search-bar { width: 160px; }
+      .hero-left { padding: 48px 24px; }
+      .section { padding: 52px 24px; }
+      .section-sm { padding: 32px 24px; }
+      .cat-grid { grid-template-columns: 1fr; }
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .deal-banner { padding: 48px 24px; }
+      .features-strip { grid-template-columns: 1fr; }
+      .footer-top { grid-template-columns: 1fr; }
+      .newsletter { padding: 52px 24px; }
+      .newsletter h2 { font-size: 42px; }
+      .newsletter-form { flex-direction: column; }
+      .newsletter-form input { border-radius: 4px; }
+      .newsletter-form button { border-radius: 4px; }
+      footer { padding: 48px 24px 24px; }
+      .footer-bottom { flex-direction: column; gap: 14px; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- Announcement Bar -->
+<div class="announcement">
+  Free shipping on orders over $75 &nbsp;<span>|</span>&nbsp;
+  Use code <strong>VELO15</strong> for 15% off your first order &nbsp;<span>|</span>&nbsp;
+  New arrivals every Friday ✦
+</div>
+
+<!-- Navbar -->
+<nav>
+  <a href="#" class="nav-logo">VE<span>L</span>O</a>
+  <ul class="nav-links">
+    <li><a href="#">New In</a></li>
+    <li><a href="#">Women</a></li>
+    <li><a href="#">Men</a></li>
+    <li><a href="#">Accessories</a></li>
+    <li><a href="#">Brands</a></li>
+    <li><a href="#" class="sale">Sale</a></li>
+  </ul>
+  <div class="nav-icons">
+    <div class="search-bar">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Search..." />
+    </div>
+    <button class="nav-icon-btn" title="Account">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="Wishlist">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+    </button>
+    <button class="nav-icon-btn" title="Cart" id="cart-btn" style="position:relative;">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="cart-badge" id="cart-count">0</span>
+    </button>
+  </div>
+</nav>
+
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">✦ New Season Collection</p>
+    <h1 class="hero-title">DRESS<br/>BOLD.<br/><span class="accent">MOVE</span><br/>FREE.</h1>
+    <p class="hero-sub">Discover the intersection of streetwear and high fashion. Each piece designed for people who refuse to blend in.</p>
+    <div class="hero-actions">
+      <a href="#products" class="btn-primary">Shop Collection</a>
+      <a href="#categories" class="btn-outline">Explore Looks</a>
+    </div>
+    <div class="hero-stats">
+      <div>
+        <div class="hero-stat-num">50K+</div>
+        <div class="hero-stat-label">Happy Customers</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">1200+</div>
+        <div class="hero-stat-label">Styles Available</div>
+      </div>
+      <div>
+        <div class="hero-stat-num">4.9★</div>
+        <div class="hero-stat-label">Avg. Rating</div>
+      </div>
+    </div>
+  </div>
+  <div class="hero-right">
+    <img src="https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=900&q=80" alt="Fashion Model" />
+    <div class="hero-tag">
+      <div class="hero-tag-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 8h14M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4M5 8v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8M10 8v8m4-8v8"/></svg>
+      </div>
+      <div class="hero-tag-text">
+        <strong>Free Returns</strong>
+        30-day hassle-free policy
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Ticker -->
+<div class="ticker">
+  <div class="ticker-inner">
+    <span class="ticker-item">NEW ARRIVALS</span><span class="ticker-dot"></span>
+    <span class="ticker-item">FREE SHIPPING $75+</span><span class="ticker-dot"></span>
+    <span class="ticker-item">SUMMER SALE UP TO 50% OFF</span><span class="ticker-dot"></span>
+    <span class="ticker-item">OVER 1200 STYLES</span><span class="ticker-dot"></span>
+    <span class="ticker-item">EXCLUSIVE DROPS WEEKLY</span><span class="ticker-dot"></span>
+    <span class="ticker-item">NEW ARRIVALS</span><span class="ticker-dot"></span>
+    <span class="ticker-item">FREE SHIPPING $75+</span><span class="ticker-dot"></span>
+    <span class="ticker-item">SUMMER SALE UP TO 50% OFF</span><span class="ticker-dot"></span>
+    <span class="ticker-item">OVER 1200 STYLES</span><span class="ticker-dot"></span>
+    <span class="ticker-item">EXCLUSIVE DROPS WEEKLY</span><span class="ticker-dot"></span>
+  </div>
+</div>
+
+<!-- Categories -->
+<section class="section" id="categories">
+  <div class="section-header">
+    <div>
+      <h2 class="section-title">SHOP BY <span>CATEGORY</span></h2>
+      <p class="section-sub">Find your perfect style in our curated collections</p>
+    </div>
+    <a href="#" class="see-all">Browse All
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="cat-grid">
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1469334031218-e382a71b716b?w=700&q=80" alt="Women" />
+      <div class="cat-overlay"></div>
+      <span class="cat-badge">600+ Styles</span>
+      <div class="cat-label">
+        <h3>Women</h3>
+        <p>Dresses, Tops, Bottoms & More</p>
+      </div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=500&q=80" alt="Men" />
+      <div class="cat-overlay"></div>
+      <span class="cat-badge">New In</span>
+      <div class="cat-label">
+        <h3>Men</h3>
+        <p>Streetwear & Essentials</p>
+      </div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" alt="Sneakers" />
+      <div class="cat-overlay"></div>
+      <div class="cat-label">
+        <h3>Sneakers</h3>
+        <p>Fresh Kicks, Fresh Fits</p>
+      </div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1548036328-c9fa89d128fa?w=500&q=80" alt="Accessories" />
+      <div class="cat-overlay"></div>
+      <div class="cat-label">
+        <h3>Accessories</h3>
+        <p>Bags, Belts & More</p>
+      </div>
+    </div>
+    <div class="cat-card">
+      <img src="https://images.unsplash.com/photo-1589465885857-44edb59bbff2?w=500&q=80" alt="Activewear" />
+      <div class="cat-overlay"></div>
+      <span class="cat-badge">Trending</span>
+      <div class="cat-label">
+        <h3>Activewear</h3>
+        <p>Train in Style</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Features Strip -->
+<div class="features-strip">
+  <div class="feature-item">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    </div>
+    <div>
+      <div class="feature-title">Free Shipping</div>
+      <div class="feature-desc">On all orders over $75</div>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/></svg>
+    </div>
+    <div>
+      <div class="feature-title">Easy Returns</div>
+      <div class="feature-desc">30-day free return policy</div>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    </div>
+    <div>
+      <div class="feature-title">Secure Payment</div>
+      <div class="feature-desc">100% secure transactions</div>
+    </div>
+  </div>
+  <div class="feature-item">
+    <div class="feature-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div>
+      <div class="feature-title">24/7 Support</div>
+      <div class="feature-desc">Chat, email & phone support</div>
+    </div>
+  </div>
+</div>
+
+<!-- Products -->
+<section class="section" id="products">
+  <div class="section-header">
+    <div>
+      <h2 class="section-title">TRENDING <span>NOW</span></h2>
+      <p class="section-sub">What everyone's wearing this season</p>
+    </div>
+    <a href="#" class="see-all">View All Products
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+  </div>
+  <div class="product-grid" id="product-grid"></div>
+</section>
+
+<!-- Deal Banner -->
+<div class="deal-banner" id="deal">
+  <div>
+    <p class="deal-eyebrow">✦ Limited Time Offer</p>
+    <h2 class="deal-title">SUMMER<br/>BLOWOUT<br/><span class="accent">SALE.</span></h2>
+    <p class="deal-desc">Up to 50% off on our entire summer collection. Fresh styles at unbeatable prices — don't miss out before the season ends.</p>
+    <div class="countdown">
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-hours">08</div>
+        <div class="countdown-label">Hours</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-mins">42</div>
+        <div class="countdown-label">Minutes</div>
+      </div>
+      <div class="countdown-unit">
+        <div class="countdown-num" id="cd-secs">15</div>
+        <div class="countdown-label">Seconds</div>
+      </div>
+    </div>
+    <div class="deal-cta">
+      <a href="#" class="btn-primary">Shop the Sale</a>
+      <a href="#" class="btn-outline">See All Deals</a>
+    </div>
+  </div>
+  <div class="deal-img-wrap">
+    <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?w=700&q=80" alt="Sale" />
+    <div class="deal-floating-badge">
+      <span class="big">50%</span>
+      <span class="small">OFF</span>
+    </div>
+  </div>
+</div>
+
+<!-- Newsletter -->
+<section class="newsletter">
+  <p class="newsletter-eyebrow">Join the VELO Family</p>
+  <h2>STAY AHEAD<br/>OF THE TREND</h2>
+  <p>Subscribe for exclusive drops, early access to sales, and style inspiration straight to your inbox.</p>
+  <div class="newsletter-form">
+    <input type="email" placeholder="Enter your email address..." />
+    <button onclick="handleSubscribe()">Subscribe</button>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">VE<span style="color:var(--coral)">L</span>O</a>
+      <p>We believe fashion is more than clothing — it's how you show up in the world. VELO is your wardrobe for every version of yourself.</p>
+      <div class="footer-social">
+        <a href="#" class="social-btn" title="Instagram">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="TikTok">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Twitter">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M22 4s-.7 2.1-2 3.4c1.6 10-9.4 17.3-18 11.6 2.2.1 4.4-.6 6-2C3 15.5.5 9.6 3 5c2.2 2.6 5.6 4.1 9 4-.9-4.2 4-6.6 7-3.8 1.1 0 3-1.2 3-1.2z"/></svg>
+        </a>
+        <a href="#" class="social-btn" title="Pinterest">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M8 12a4 4 0 1 1 8 0c0 2.21-1.79 4-4 4a4.07 4.07 0 0 1-1.5-.29L9 21"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/></svg>
+        </a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Shop</h4>
+      <ul>
+        <li><a href="#">New Arrivals</a></li>
+        <li><a href="#">Women's Fashion</a></li>
+        <li><a href="#">Men's Fashion</a></li>
+        <li><a href="#">Sneakers</a></li>
+        <li><a href="#">Accessories</a></li>
+        <li><a href="#">Sale</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Help</h4>
+      <ul>
+        <li><a href="#">Size Guide</a></li>
+        <li><a href="#">Track Order</a></li>
+        <li><a href="#">Returns & Exchanges</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">FAQs</a></li>
+        <li><a href="#">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#">About VELO</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Press</a></li>
+        <li><a href="#">Affiliate Program</a></li>
+        <li><a href="#">Privacy Policy</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2025 VELO Fashion. All rights reserved.</p>
+    <div class="payment-icons">
+      <span class="pay-icon">VISA</span>
+      <span class="pay-icon">MC</span>
+      <span class="pay-icon">AMEX</span>
+      <span class="pay-icon">PAYPAL</span>
+      <span class="pay-icon">APPLE PAY</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* ── PRODUCT DATA ── */
+  const products = [
+    { id:1, name:'Oversized Blazer', brand:'Studio Noir', price:129, oldPrice:189, img:'https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=600&q=80', badge:'new', colors:['#1a1a1a','#8B7355','#C0C0C0'], rating:4.8, reviews:214 },
+    { id:2, name:'Ribbed Mini Dress', brand:'Zephyr', price:72, oldPrice:null, img:'https://images.unsplash.com/photo-1539109136881-3be0616acf4b?w=600&q=80', badge:'hot', colors:['#FF6B6B','#000000','#F5E6D3'], rating:4.9, reviews:387 },
+    { id:3, name:'Wide-Leg Denim', brand:'Rawcut', price:89, oldPrice:120, img:'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=600&q=80', badge:'sale', colors:['#4A90D9','#1a1a1a','#C0B090'], rating:4.7, reviews:156 },
+    { id:4, name:'Satin Slip Top', brand:'Lumiere', price:54, oldPrice:79, img:'https://images.unsplash.com/photo-1564257631407-4deb1f99d992?w=600&q=80', badge:'sale', colors:['#D4B483','#8B4513','#1a1a1a'], rating:4.6, reviews:93 },
+    { id:5, name:'Cargo Utility Pants', brand:'Rawcut', price:98, oldPrice:null, img:'https://images.unsplash.com/photo-1506629082955-511b1aa562c8?w=600&q=80', badge:'new', colors:['#556B2F','#1a1a1a','#D2B48C'], rating:4.8, reviews:201 },
+    { id:6, name:'Cropped Leather Jacket', brand:'Studio Noir', price:245, oldPrice:320, img:'https://images.unsplash.com/photo-1551488831-00ddcb6c6bd3?w=600&q=80', badge:'sale', colors:['#1a1a1a','#8B0000','#D2691E'], rating:5.0, reviews:412 },
+    { id:7, name:'Linen Co-ord Set', brand:'Lumiere', price:115, oldPrice:null, img:'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?w=600&q=80', badge:'hot', colors:['#F5F0EB','#E8D5B7','#C0B090'], rating:4.9, reviews:288 },
+    { id:8, name:'Mesh Layering Top', brand:'Zephyr', price:38, oldPrice:55, img:'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80', badge:'sale', colors:['#1a1a1a','#FF6B6B','#FFFFFF'], rating:4.5, reviews:77 },
+  ];
+
+  let cartCount = 0;
+  const cartCountEl = document.getElementById('cart-count');
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2600);
+  }
+
+  function addToCart(name) {
+    cartCount++;
+    cartCountEl.textContent = cartCount;
+    showToast(`✓  "${name}" added to your bag`);
+  }
+
+  function toggleWish(btn, name) {
+    btn.classList.toggle('liked');
+    const liked = btn.classList.contains('liked');
+    showToast(liked ? `♥  "${name}" saved to wishlist` : `✕  "${name}" removed from wishlist`);
+  }
+
+  function handleSubscribe() {
+    showToast('🎉  You\'re subscribed! Check your inbox.');
+  }
+
+  function stars(r) {
+    const full = Math.floor(r);
+    const half = r % 1 >= 0.5 ? 1 : 0;
+    return '★'.repeat(full) + (half ? '½' : '') + '☆'.repeat(5 - full - half);
+  }
+
+  function renderProducts() {
+    const grid = document.getElementById('product-grid');
+    grid.innerHTML = products.map(p => {
+      const discount = p.oldPrice ? Math.round((1 - p.price / p.oldPrice) * 100) : null;
+      const badgeClass = { new:'badge-new', sale:'badge-sale', hot:'badge-hot' }[p.badge] || '';
+      const colorDots = p.colors.map(c => `<div class="color-dot" style="background:${c}" title="${c}"></div>`).join('');
+      return `
+        <div class="product-card">
+          <div class="product-img-wrap">
+            <img src="${p.img}" alt="${p.name}" loading="lazy" />
+            <span class="product-badge ${badgeClass}">${p.badge === 'new' ? 'New In' : p.badge === 'sale' ? 'Sale' : 'Hot'}</span>
+            <button class="wishlist-btn" onclick="toggleWish(this,'${p.name}')" title="Save to wishlist">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            </button>
+            <button class="quick-add" onclick="addToCart('${p.name}')">+ Quick Add to Bag</button>
+          </div>
+          <div class="product-info">
+            <div class="product-brand">${p.brand}</div>
+            <div class="product-name">${p.name}</div>
+            <div class="product-price-row">
+              <span class="price-current">$${p.price}</span>
+              ${p.oldPrice ? `<span class="price-original">$${p.oldPrice}</span><span class="price-off">-${discount}%</span>` : ''}
+            </div>
+            <div class="product-colors">${colorDots}</div>
+            <div class="product-rating">
+              <span class="stars">${'★'.repeat(Math.floor(p.rating))}${'☆'.repeat(5 - Math.floor(p.rating))}</span>
+              <span class="rating-count">${p.rating} (${p.reviews})</span>
+            </div>
+          </div>
+        </div>`;
+    }).join('');
+  }
+
+  /* ── COUNTDOWN ── */
+  function startCountdown() {
+    let total = (8 * 3600) + (42 * 60) + 15;
+    setInterval(() => {
+      if (total <= 0) return;
+      total--;
+      const h = Math.floor(total / 3600);
+      const m = Math.floor((total % 3600) / 60);
+      const s = total % 60;
+      document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+      document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+      document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+    }, 1000);
+  }
+
+  renderProducts();
+  startCountdown();
+</script>
+</body>
+</html>
